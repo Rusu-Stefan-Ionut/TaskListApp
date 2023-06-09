@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ObjectToSerialize xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DataBases>
+    <DataBase Name="1">
+      <TDLList>
+        <TDL>
+          <Name>a</Name>
+          <Picture>../Resources/images/Gigel.jpg</Picture>
+          <TaskList />
+          <SubTDL />
+        </TDL>
+        <TDL>
+          <Name>v</Name>
+          <Picture>../Resources/images/4doresmorehoes.jpg</Picture>
+          <TaskList />
+          <SubTDL />
+        </TDL>
+      </TDLList>
+      <CategoryList>
+        <Category>
+          <Name>Work</Name>
+        </Category>
+        <Category>
+          <Name>Fun</Name>
+        </Category>
+        <Category>
+          <Name>Hobby</Name>
+        </Category>
+        <Category>
+          <Name>Work</Name>
+        </Category>
+        <Category>
+          <Name>Fun</Name>
+        </Category>
+        <Category>
+          <Name>Hobby</Name>
+        </Category>
+        <Category>
+          <Name>Work</Name>
+        </Category>
+        <Category>
+          <Name>Fun</Name>
+        </Category>
+        <Category>
+          <Name>Hobby</Name>
+        </Category>
+      </CategoryList>
+    </DataBase>
+  </DataBases>
+  <LastOpenedDatabaseName>1</LastOpenedDatabaseName>
+</ObjectToSerialize>

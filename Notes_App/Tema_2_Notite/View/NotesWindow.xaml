@@ -1,0 +1,143 @@
+﻿<Window x:Class="Tema_2_Notite.View.NotesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tema_2_Notite.ViewModel"
+        xmlns:behavior="clr-namespace:AttachedCommandBehavior;assembly=AttachedCommandBehavior" 
+        mc:Ignorable="d"
+        Title="NotesWindow" Height="625" Width="1000">
+    <Window.DataContext>
+        <local:MainVM />
+    </Window.DataContext>
+    <Grid>
+        <!-- Menu -->
+        <Menu Grid.Row="0" HorizontalAlignment="Left" Width="1010">
+            <MenuItem Header="_File">
+                <MenuItem Header="_OpenDataBase/NewDataBase" Command="{Binding OpenDataBaseCommand}"/>
+                <MenuItem Header="_ArchiveDataBase"/>
+                <Separator/>
+                <MenuItem Header="_Exit" Click="MenuItemExit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_TDL">
+                <MenuItem Header="_Add Root TDL" Command="{Binding CreateNewTDLCommand}" />
+                <MenuItem Header="_Add Sub TDL" Command="{Binding CreateNewSubTDLCommand}"/>
+                <MenuItem Header="_Edit" Command="{Binding EditTDLCommand}"/>
+                <MenuItem Header="_Delete" Command="{Binding DeleteTDLCommand}"/>
+                <MenuItem Header="_Move Up" Command="{Binding MoveUpTDLCommand}"/>
+                <MenuItem Header="_Move Down" Command="{Binding MoveDownTDLCommand}"/>
+                <MenuItem Header="_Change Path" Command="{Binding ChangePathTDLCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Task">
+                <MenuItem Header="_Add" Command="{Binding CreateNewTaskCommand}"/>
+                <MenuItem Header="_Edit" Command="{Binding EditTaskCommand}"/>
+                <MenuItem Header="_Delete" Command="{Binding DeleteTaskCommand}"/>
+                <MenuItem Header="_Set Done" Command="{Binding SetDoneTaskCommand}"/>
+                <MenuItem Header="_Move Up" Command="{Binding MoveUpTaskCommand}"/>
+                <MenuItem Header="_Move Down" Command="{Binding MoveDownTaskCommand}"/>
+                <MenuItem Header="_Manage Category" Command="{Binding ManageCategoryCommand}" />
+                <MenuItem Header="_Find Task" Command="{Binding FindTaskCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Sort">
+                    <MenuItem Header="By Priority" Command="{Binding ByPriorityCommand}"/>
+                    <MenuItem Header="By Deadline" Command="{Binding ByDeadLineCommand}"/>
+                </MenuItem>
+                <MenuItem Header="Filter">
+                    <MenuItem Header="By Category" ItemsSource="{Binding CurrentDataBase.CategoryList}">
+                        <MenuItem.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Header="{Binding}" Command="{Binding DataContext.ByCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </MenuItem.ItemTemplate>
+                    </MenuItem>
+                    <MenuItem Header="Finished Tasks" Command="{Binding FinishedTasksCommand}"/>
+                    <MenuItem Header="Late Finished Tasks" Command="{Binding LateFinishedTasksCommand}"/>
+                    <MenuItem Header="Unfinished Tasks" Command="{Binding UnfinishedTasksCommand}"/>
+                    <MenuItem Header="Due Tasks" Command="{Binding DueTasksCommnad}"/>
+                </MenuItem>
+                <MenuItem Header="Statistics" Command="{Binding StatisticsCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About">
+                    <TextBlock Text="Nume: Rusu Steafan Ionut"/>
+                    <TextBlock Text="Grupa: 10LF 313"/>
+                    <TextBlock Text="email: stefan-ionut.rusu@student.unitbv.ro"/>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+
+        <!-- Left panel for folders and to-do lists -->
+        <Grid Background="LightGray" Margin="0,25,0,2" HorizontalAlignment="Center" Width="1000">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="93*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="162*"/>
+                <ColumnDefinition Width="715*"/>
+            </Grid.ColumnDefinitions>
+            <!-- List of folders and to-do lists -->
+            <TreeView x:Name="FoldersTreeView" ItemsSource="{Binding CurrentDataBase.TDLList}" Margin="0,0,81,20" Grid.Column="1" Grid.ColumnSpan="3"
+          behavior:CommandBehavior.Command="{Binding ChangeTaskCommand}"
+          behavior:CommandBehavior.CommandParameter="{Binding SelectedItem, ElementName=FoldersTreeView}"
+          behavior:CommandBehavior.Event="SelectedItemChanged">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding SubTDL}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding Picture}" Width="20" Height="20" Margin="0,0,5,0"/>
+                            <TextBlock Text="{Binding Name}" FontSize="20"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </Grid>
+
+
+
+        <!-- Right panel for task details -->
+        <Grid Margin="0,27,0,36">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="87*" />
+                <RowDefinition Height="85*" />
+            </Grid.RowDefinitions>
+
+            <!-- Top half for clickable list of tasks -->
+            <StackPanel Height="260" Margin="249,0,41,16" Width="750">
+                <DataGrid x:Name="usersGrid" IsReadOnly="True" ItemsSource="{Binding FilteredTaskList}" AutoGenerateColumns="False" Width="750" SelectedItem="{Binding SelectedTask}" Height="260">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Finished}" Value="True">
+                                    <Setter Property="Background" Value="Gray" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Width="50" Binding="{Binding Finished}" />
+                        <DataGridTextColumn Width="200" Header="Name" Binding="{Binding Name}" />
+                        <DataGridTextColumn Width="150" Header="Priority" Binding="{Binding Priority}" />
+                        <DataGridTextColumn Width="150" Header="Type" Binding="{Binding Type}" />
+                        <DataGridTextColumn Width="150" Header="DeadLine" Binding="{Binding DeadLine}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+            <!-- Bottom half for text of the selected task -->
+            <TextBox Name="TaskTextBox" Margin="249,276,41,10" Text="{Binding SelectedTask.Description}" Grid.RowSpan="2"/>
+        </Grid>
+
+        <!-- Bottom panel for task statistics -->
+        <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" Background="Gray" Margin="0,555,0,0" HorizontalAlignment="Center" Width="1000" Height="36">
+            <TextBlock Text="TSK Due Today:" Margin="10"/>
+            <TextBlock Name="TotalTasksTextBlock" Text="{Binding CurrentDataBase.Stat1}" Width="10" Margin="5"/>
+            <TextBlock Text="TSK Due Tomorrow" Margin="10"/>
+            <TextBlock Name="CompletedTasksTextBlock" Text="{Binding CurrentDataBase.Stat2}" Width="10" Margin="5"/>
+            <TextBlock Text="TSK Finished Late:" Margin="10"/>
+            <TextBlock Name="OngoingTasksTextBlock" Text="{Binding CurrentDataBase.Stat3}" Width="10" Margin="5"/>
+            <TextBlock Text="TSK Unfinished:" Margin="10"/>
+            <TextBlock Name="UnfinisedTasks" Text="{Binding CurrentDataBase.Stat4}" Width="10" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>
